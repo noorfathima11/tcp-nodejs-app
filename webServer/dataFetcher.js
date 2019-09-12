@@ -9,8 +9,12 @@ const readData = async (fileLocation) => {
       if(err) resolve('500')
       let extension = path.parse(fileLocation).ext
       console.log('ext', extension, data)
+      const contentType = `Content-type: ${checkMime.mimeType[extension] || 'text/plain'}`
+      const contentLength = `Content-Length: ${Buffer.byteLength(data.toString(), 'utf')}`
+      const enter = '\r\n'
+      console.log('contentLength', contentLength)
       resolve({
-        header1 : `Content-type: ${checkMime.mimeType[extension] || 'text/plain'}`,
+        header1 : contentType.concat(enter, contentLength),
         data : data
       })
     })
