@@ -44,7 +44,7 @@ server.on('connection', function(sock){
         console.log('here2', headerField)
         let blankLine = Buffer.from('\r\n\r\n')
         console.log('here3', blankLine)
-        console.log(Buffer.concat([statusLine, headerField, blankLine, fetchedData.data]).toString())
+        //console.log(Buffer.concat([statusLine, headerField, blankLine, fetchedData.data]).toString())
 
         sock.write(Buffer.concat([statusLine, headerField, blankLine, fetchedData.data]))
       }
