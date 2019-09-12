@@ -9,8 +9,12 @@ const readData = async (fileLocation) => {
       if(err) resolve('500')
       let extension = path.parse(fileLocation).ext
       console.log('ext', extension, data)
+
+      const header1  = `Content-type: ${checkMime.mimeType[extension] || 'text/plain'}`
+      const header2  =   `Content-Length: ${data.length}`
+      const enter = '\r\n'
       resolve({
-        header1 : `Content-type: ${checkMime.mimeType[extension] || 'text/plain'}`,
+        header : Buffer.from(header1.concat(enter, header2)),
         data : data
       })
     })
@@ -18,12 +22,14 @@ const readData = async (fileLocation) => {
 }
 
 exports.fetchData = async function (uri) {
+
   let fileLocation = path.join(rootDir, uri)
   console.log('fileLocation', fileLocation)
-  isDirExists = fs.existsSync(fileLocation) && fs.lstatSync(fileLocation).isDirectory()
+  console.log('existsSync', fs.existsSync(fileLocation), 'lstat', (fs.lstatSync(fileLocation).isDirectory() || fs.lstatSync(fileLocation).isFile()))
+  isDirExists = fs.existsSync(fileLocation) && (fs.lstatSync(fileLocation).isDirectory() || fs.lstatSync(fileLocation).isFile())
   console.log(isDirExists)
   if(!isDirExists) return '404'
-  fileLocation += 'index.html'
+  if(!fs.lstatSync(fileLocation).isFile()) fileLocation += 'index.html'
   console.log('newFileLocation', fileLocation)
   return await readData(fileLocation)
 }

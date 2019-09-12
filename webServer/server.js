@@ -39,17 +39,21 @@ server.on('connection', function(sock){
           sock.write(Buffer.from(statusLine))
         }
         statusLine = Buffer.from(`HTTP/1.1 200 OK\r\n`)
-        console.log('here1', statusLine, fetchedData.header1)
-        let headerField = Buffer.from(fetchedData.header1)
-        console.log('here2', headerField)
+        //console.log('here1', statusLine, fetchedData.header1)
+        let headerField = fetchedData.header
+        //console.log('here2', headerField)
         let blankLine = Buffer.from('\r\n\r\n')
-        console.log('here3', blankLine)
+        //console.log('here3', blankLine)
         console.log(Buffer.concat([statusLine, headerField, blankLine, fetchedData.data]).toString())
-
-        sock.write(Buffer.concat([statusLine, headerField, blankLine, fetchedData.data]))
+        let totalLength = statusLine.length + headerField.length + blankLine.length
+        sock.write(Buffer.concat([statusLine, headerField, blankLine, fetchedData.data], totalLength))
       }
     getFetchedData()
     }
+  })
+
+  sock.on('end', function () {
+    console.log('Ended: ' + sock.remoteAddress + ' ' + sock.remotePort)
   })
 
   // Add a 'close' event handler to this instance of socket

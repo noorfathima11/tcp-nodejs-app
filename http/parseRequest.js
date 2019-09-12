@@ -1,3 +1,0 @@
-exports.parseRequest = function (requestData){
-
-}

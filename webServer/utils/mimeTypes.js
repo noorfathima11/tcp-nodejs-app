@@ -12,5 +12,7 @@ exports.mimeType = {
   '.pdf': 'application/pdf',
   '.doc': 'application/msword',
   '.eot': 'appliaction/vnd.ms-fontobject',
-  '.ttf': 'aplication/font-sfnt'
+  '.ttf': 'aplication/font-sfnt',
+  '.gif': 'image/gif'
 }
+
