@@ -24,3 +24,8 @@ content-length: count the number of bytes (octets), therefor \r\n should be cons
 
 The presence of a message body in a request is signaled by a
    Content-Length or Transfer-Encoding header field.
+
+Errors encountered:
+-> Failed to load resource: net::ERR_CONTENT_LENGTH_MISMATCH
+   - This error only shows up in chrome browser
+   - Whenever I make a POST request, the media files are served but not rendered due to this error

@@ -11,10 +11,11 @@ const readData = async (fileLocation) => {
       console.log('ext', extension, data)
       const contentType = `Content-type: ${checkMime.mimeType[extension] || 'text/plain'}`
       const contentLength = `Content-Length: ${Buffer.byteLength(data.toString(), 'utf')}`
+      const acceptRanges = `Accept-Ranges: bytes`
       const enter = '\r\n'
       console.log('contentLength', contentLength)
       resolve({
-        header : contentType.concat(enter, contentLength),
+        header : contentType.concat(enter, contentLength, enter, acceptRanges),
         data : data
       })
     })
@@ -40,8 +41,15 @@ exports.fetchData = async function (requestLine, body) {
   isDirExists = fs.existsSync(fileLocation) && (fs.lstatSync(fileLocation).isDirectory() || fs.lstatSync(fileLocation).isFile())
   console.log(isDirExists)
   if(!isDirExists) return '404'
-  if(!fs.lstatSync(fileLocation).isFile()) fileLocation += 'index.html'
-  console.log('newFileLocation', fileLocation, body)
-  if(requestLine.method === 'GET') return await readData(fileLocation)
-  if(requestLine.method === 'POST') return await writeData(fileLocation, body)
+  if(!fs.lstatSync(fileLocation).isFile()) {
+    console.log('is not a file')
+    fileLocation += 'index.html'
+    console.log('newFileLocation', fileLocation, body)
+  }
+  if(requestLine.method === 'GET') {
+    return await readData(fileLocation)
+  }
+  if(requestLine.method === 'POST'){
+    return await writeData(fileLocation, body)
+  }
 }

@@ -1,12 +1,30 @@
 let formJSON = document.getElementById('post-json')
-console.log('form-JSON', formJSON)
+//let imageUpload = document.getElementById('image')
+//let reader = new FileReader()
 
-formJSON.addEventListener('submit', async (e) => {
+// const readFile = async () => {
+//   return new Promise((resolve) => {
+//     reader.onload = (theFile) => {
+//       let fileName = theFile.name
+//       resolve(fileName)
+//     }
+//   })
+// }
+
+formJSON.addEventListener('change', async (e) => {
   console.log('Form submitted')
   e.preventDefault()
-  let headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-  let body = { inputName: e.target.inputName.value, inputNameAgain: e.target.inputNameAgain.value }
+  //let fileName = await readFile()
+  //let fileData = reader.readAsArrayBuffer(e.target.image.files[0])
+  let headers = { 'Accept': 'multipart/form-data', 'Content-Type': 'multipart/form-data' }
+  let body = { inputName: e.target.inputName.value,
+               inputNameAgain: e.target.inputNameAgain.value
+               //imageFileName: fileName,
+               //imageFileData: fileData
+             }
   let reqBody = { headers: headers, method: 'POST', body: JSON.stringify(body) }
-  let res = await fetch('http://localhost:7070/post-data.json', reqBody)
+  let res = await fetch('http://localhost:7070/post-data.js', reqBody)
   console.log(res)
 })
+
+
