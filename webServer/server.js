@@ -16,7 +16,7 @@ server.on('connection', function(sock){
   console.log('CONNECTED: ' + sock.remoteAddress + ' : ' + sock.remotePort)
 
   sock.on('data', function(data){
-    [ requestLine, requestLineObject ] = parser.parseRequest(data, sock)
+    [ requestLine, requestLineObject, bodyObject = null ] = parser.parseRequest(data, sock)
 
     // Check if there are additional whitespaces in the request line
     let badRequest = errorCheck.wsInRequestLine(requestLine)
@@ -28,7 +28,7 @@ server.on('connection', function(sock){
     }
     else {
       let getFetchedData = async () => {
-        let fetchedData = await dataFetcher.fetchData(requestLineObject.uri)
+        let fetchedData = await dataFetcher.fetchData(requestLineObject, bodyObject)
         console.log('fetchedData', fetchedData)
         if(fetchedData === '404'){
           statusLine = errorCheck.fileNotExists404()
@@ -39,8 +39,8 @@ server.on('connection', function(sock){
           sock.write(Buffer.from(statusLine))
         }
         statusLine = Buffer.from(`HTTP/1.1 200 OK\r\n`)
-        console.log('here1', statusLine, fetchedData.header1)
-        let headerField = Buffer.from(fetchedData.header1)
+        console.log('here1', statusLine, fetchedData.header)
+        let headerField = Buffer.from(fetchedData.header)
         console.log('here2', headerField)
         let blankLine = Buffer.from('\r\n\r\n')
         console.log('here3', blankLine)

@@ -14,21 +14,34 @@ const readData = async (fileLocation) => {
       const enter = '\r\n'
       console.log('contentLength', contentLength)
       resolve({
-        header1 : contentType.concat(enter, contentLength),
+        header : contentType.concat(enter, contentLength),
         data : data
       })
     })
   })
 }
 
-exports.fetchData = async function (uri) {
-  let fileLocation = path.join(rootDir, uri)
+const writeData = async (fileLocation, body) => {
+  return new Promise(resolve => {
+    fs.writeFile(fileLocation, body, error => {
+      if(error) resolve('500')
+      else resolve(({
+        header : `Content-type: text/plain`,
+        data: Buffer.from('POST successfull')
+      }))
+    })
+  })
+}
+
+exports.fetchData = async function (requestLine, body) {
+  let fileLocation = path.join(rootDir, requestLine.uri)
   console.log('fileLocation', fileLocation)
   console.log('existsSync', fs.existsSync(fileLocation), 'lstat', (fs.lstatSync(fileLocation).isDirectory() || fs.lstatSync(fileLocation).isFile()))
   isDirExists = fs.existsSync(fileLocation) && (fs.lstatSync(fileLocation).isDirectory() || fs.lstatSync(fileLocation).isFile())
   console.log(isDirExists)
   if(!isDirExists) return '404'
   if(!fs.lstatSync(fileLocation).isFile()) fileLocation += 'index.html'
-  console.log('newFileLocation', fileLocation)
-  return await readData(fileLocation)
+  console.log('newFileLocation', fileLocation, body)
+  if(requestLine.method === 'GET') return await readData(fileLocation)
+  if(requestLine.method === 'POST') return await writeData(fileLocation, body)
 }

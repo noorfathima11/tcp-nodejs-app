@@ -4,17 +4,25 @@ let requestLineObject = {
   protocol : ''
 }
 let headerFieldsObject = {}
+let bodyObject = {}
 
 exports.parseRequest = function (requestData, sock){
   console.log('DATA ' + sock.remoteAddress + ' : ' + requestData)
   requestData = requestData.toString()
-  let requestSplit = requestData.split(/\r\n|\r|\n/)
+  let requestSplit = requestData.split(/\r\n|\r|\n|\r\n\r\n/)
   console.log('splitArray', requestSplit)
 
   let requestLine = requestLineParser(requestSplit[0])
 
   headerFieldsParser(requestSplit)
-  return [requestLine, requestLineObject]
+  console.log('Helllllllllllllllo')
+  if(Object.keys(headerFieldsObject).includes('Content-Length')) {
+    console.log('Body exists')
+    //bodyObject = bodyParser(requestSplit[requestSplit.length - 1])
+    bodyObject = requestSplit[requestSplit.length - 1]
+    console.log('bodyObject', bodyObject)
+  }
+  return [requestLine, requestLineObject, bodyObject]
 
 }
 
@@ -42,4 +50,8 @@ function headerFieldsParser(request){
   console.log(headerFields)
   console.log(headerFieldsObject)
 }
+
+// function bodyParser(body){
+//   return JSON.parse(body)
+// }
 

@@ -19,3 +19,8 @@ Echo server:
 
 In nodejs request and response are readable and writable stream respectively.
 Reference: https://debugmode.net/2014/01/14/create-echo-server-in-node-js/
+
+content-length: count the number of bytes (octets), therefor \r\n should be considered to be 2 octets/bytes.
+
+The presence of a message body in a request is signaled by a
+   Content-Length or Transfer-Encoding header field.
